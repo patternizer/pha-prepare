@@ -4,8 +4,8 @@
 #------------------------------------------------------------------------------
 # PROGRAM: pha-prepare.py
 #------------------------------------------------------------------------------
-# Version 0.1
-# 12 February, 2021
+# Version 0.2
+# 13 February, 2021
 # Michael Taylor
 # https://patternizer.github.io
 # patternizer AT gmail DOT com
@@ -17,14 +17,6 @@
 # Dataframe libraries:
 import numpy as np
 import pandas as pd
-# OS libraries:
-import os
-import os.path
-from pathlib import Path
-import sys
-import subprocess
-from subprocess import Popen
-import time
 
 # Silence library version notifications
 import warnings
@@ -83,23 +75,36 @@ df['year'] = dates
 for j in range(12):        
     df[df.columns[j+2]] = [ obs[i][j] for i in range(len(obs)) ]
 
-# Use CRUTEM archive to extract station metadata
+# LOAD: CRUTEM archive --> for station metadata (lat, lon, elevation)
 
 dg = pd.read_pickle('df_anom.pkl', compression='bz2')
 
-#Index(['year', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12',
-#       'stationcode', 'stationlat', 'stationlon', 'stationelevation',
-#       'stationname', 'stationcountry', 'stationfirstyear', 'stationlastyear',
-#       'stationsource', 'stationfirstreliable'],
+# LOAD: CRUTEM normals --> to filter out stations without normals
 
-# Write station files in GHCNm-v3 format
+nheader = 0
+f = open('normals5.GloSAT.prelim03_FRYuse_ocPLAUS1_iqr3.600reg0.3_19411990_MIN15_OCany_19611990_MIN15_PERDEC00_NManySDreq.txt')
+lines = f.readlines()
+normals_stationcodes = []
+normals_sourcecodes = []
+for i in range(nheader,len(lines)):
+    words = lines[i].split()    
+    normals_stationcode = words[0][0:6]
+    normals_sourcecode = int(words[17])
+    normals_stationcodes.append(normals_stationcode)
+    normals_sourcecodes.append(normals_sourcecode)
+f.close()    
+dn = pd.DataFrame({'stationcode':normals_stationcodes,'sourcecode':normals_sourcecodes})
+dg_normals = dg[dg['stationcode'].isin(dn[dn['sourcecode']>1]['stationcode'])].reset_index()
+dg = dg_normals.copy()
+
+# WRITE: station files in GHCNm-v3 format + stnlist
 
 station_list = open('world1_stnlist.tavg', "w")
 for i in range(n):
     da = df[df['stationcode']==np.unique(stationcodes)[i]]
     db = dg[dg['stationcode']==np.unique(stationcodes)[i]]
 
-    # Add file to station list if metadata exists
+    # Add file to station list if metadata exists --> station is in CRUTEM archive (with normals)
 
     if len(db)>0:
         station_list.write('%s' % db['stationcode'].unique()[0] + ' ')
