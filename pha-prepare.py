@@ -99,6 +99,7 @@ dg = dg_normals.copy()
 
 # WRITE: station files in GHCNm-v3 format + stnlist
 
+n = len(np.unique(stationcodes))
 station_list = open('world1_stnlist.tavg', "w")
 for i in range(n):
     da = df[df['stationcode']==np.unique(stationcodes)[i]]
@@ -107,7 +108,7 @@ for i in range(n):
     # Add file to station list if metadata exists --> station is in CRUTEM archive (with normals)
 
     if len(db)>0:
-        station_list.write('%s' % db['stationcode'].unique()[0] + ' ')
+        station_list.write('%s' % 'PHA00' + db['stationcode'].unique()[0] + ' ')
         station_list.write('%s' % str(db['stationlat'].unique()[0]).rjust(5) + '     ')
         station_list.write('%s' % str(db['stationlon'].unique()[0]).rjust(5) + '    ')
         station_list.write('%s' % '+1 01' + ' ')
@@ -118,10 +119,10 @@ for i in range(n):
     
         # Write station file out in GHCNm-v3 format
 
-        filename = np.unique(stationcodes)[i] + '.raw.tavg'
+        filename = 'PHA00' + np.unique(stationcodes)[i] + '.raw.tavg'
         station_file = open(filename, "w")
         for j in range(len(da)):
-            station_file.write('%s' % da['stationcode'].unique()[0] + ' ')
+            station_file.write('%s' % 'PHA00' + da['stationcode'].unique()[0] + ' ')
             station_file.write('%s' % str(da['year'].iloc[j]) + ' ')
             for k in range(1,13):
                 val = str(da[str(k)].iloc[j]).rjust(5) + '    '
