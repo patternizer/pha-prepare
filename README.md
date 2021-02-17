@@ -1,12 +1,15 @@
+![image](https://github.com/patternizer/pha-prepare/blob/master/stationlistmap.png)
+
 # pha-prepare
 
-Python pre-processor to generate input files for NOAA's PHA v52i algorithm for pairwise homogenisation of land surface air temperature monitoring station subsets from CRUTEM5 in the [GloSAT](https://www.glosat.org) project:
+Python pre-processor to generate input station files and station list file for NOAA's PHA v52i algorithm for pairwise homogenisation of land surface air temperature monitoring station subsets from CRUTEM5 in the [GloSAT](https://www.glosat.org) project:
 
 * python input file generation code
 
 ## Contents
 
-* `pha-prepare.py` - python code to generate station list and station input files 
+* `pha-prepare.py` - python code to generate station list and station input files + subset map
+* `rate-of-station-loss.py` - python code to calculate the rate of station loss as a fnuction of minimum years of data requirement
 
 The first step is to clone the latest pha-prepare code and step into the check out directory: 
 
@@ -22,6 +25,12 @@ pha-prepare scripts can be run from sources directly on input data from CRUTEM.
 Run with:
 
     $ python pha-prepare.py
+    $ python rate-of-station-loss.py
+
+For your PHA v52i set up:
+
+* Copy the world1_stnlist.tavg file to your run directory: /pha_v52i/data/benchmark/world1/meta/ 
+* Copy the station files [stationid].raw.tavg to your run directory: /pha_v52i/data/benchmark/world1/monthly/raw/
 
 ## License
 
