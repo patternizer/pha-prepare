@@ -43,11 +43,13 @@ warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
 fontsize = 20
 min_years = 10
 flag_normals = True
-flag_stationfiles = False
+flag_stationfiles = True
 flag_stationlistmap = True
 
-#filename = 'Iceland21.postmerge'
-filename = 'Iceland_all_rawlatest_270121.Tg'
+#filename = 'DATA/Iceland21.postmerge'
+filename = 'DATA/Iceland_all_rawlatest_270121.Tg'
+normals_file = 'DATA/normals5.GloSAT.prelim03_FRYuse_ocPLAUS1_iqr3.600reg0.3_19411990_MIN15_OCany_19611990_MIN15_PERDEC00_NManySDreq.txt'
+anomaly_file = 'DATA/df_anom.pkl'
 
 #------------------------------------------------------------------------------
 # LOAD: station(s) monthly data (CRUTEM format)
@@ -121,9 +123,9 @@ if flag_normals == True:
     # LOAD: CRUTEM archive --> for station metadata (lat, lon, elevation)
     # LOAD: CRUTEM normals --> to filter out stations without normals
 
-    dg = pd.read_pickle('df_anom.pkl', compression='bz2')
+    dg = pd.read_pickle(anomaly_file, compression='bz2')
     nheader = 0
-    f = open('normals5.GloSAT.prelim03_FRYuse_ocPLAUS1_iqr3.600reg0.3_19411990_MIN15_OCany_19611990_MIN15_PERDEC00_NManySDreq.txt')
+    f = open(normals_file)
     lines = f.readlines()
     normals_stationcodes = []
     normals_sourcecodes = []
@@ -224,13 +226,21 @@ if flag_stationlistmap == True:
 #   ax.coastlines()
     ax.gridlines()  
     for i in range(len(stationcodes)):
-        ax.scatter(x=stationlons[i], y=stationlats[i], marker='s', facecolor='lightgrey', edgecolor='black', transform=ccrs.PlateCarree())
+        if i == 0:
+            ax.scatter(x=stationlons[i], y=stationlats[i], marker='s', facecolor='lightgrey', edgecolor='black', transform=ccrs.PlateCarree(), label='PHA: not processed')
+        else:
+            ax.scatter(x=stationlons[i], y=stationlats[i], marker='s', facecolor='lightgrey', edgecolor='black', transform=ccrs.PlateCarree())
     for i in range(len(stationcodes_pha)):
-        ax.scatter(x=stationlons_pha[i], y=stationlats_pha[i], marker='s', facecolor='red', edgecolor='darkred', transform=ccrs.PlateCarree())
+        if i == 0:
+            ax.scatter(x=stationlons_pha[i], y=stationlats_pha[i], marker='s', facecolor='red', edgecolor='darkred', transform=ccrs.PlateCarree(), label='PHA: processed')
+        else:
+            ax.scatter(x=stationlons_pha[i], y=stationlats_pha[i], marker='s', facecolor='red', edgecolor='darkred', transform=ccrs.PlateCarree())
+    plt.tick_params(labelsize=fontsize)        
     ax.set_xticks(ax.get_xticks()[abs(ax.get_xticks())<=180])
     ax.set_yticks(ax.get_yticks()[abs(ax.get_yticks())<=90])
     ax.tick_params(labelsize=16)    
-#   plt.legend(bbox_to_anchor=(1.01, 1), loc='upper left')
+    plt.legend(loc='lower left', bbox_to_anchor=(0, -0.8), ncol=1, facecolor='lightgrey', framealpha=1, fontsize=fontsize)    
+    fig.subplots_adjust(left=None, bottom=0.4, right=None, top=None, wspace=None, hspace=None)             
     plt.title(titlestr, fontsize=fontsize, pad=20)
     plt.savefig(figstr)
     plt.close('all')
