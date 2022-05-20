@@ -1,4 +1,4 @@
-![image](https://github.com/patternizer/pha-prepare/blob/master/stationlistmap.png)
+![image](https://github.com/patternizer/pha-prepare/blob/master/rate-of-station-loss.png)
 
 # pha-prepare
 
@@ -9,7 +9,10 @@ Python pre-processor to generate input station files and station list file for N
 ## Contents
 
 * `pha-prepare.py` - python code to generate station list and station input files + subset map
-* `rate-of-station-loss.py` - python code to calculate the rate of station loss as a fnuction of minimum years of data requirement
+* `pha-prepare-sef.py` - python code to convert a folder of station SEF files to GHCNm PHAv52i .raw.tavg and generate PHA station inventory file
+* `pha-prepare-glosat.py` - python code to read in CRUTEM5.0.1.0 archive header-data file and generate GHCNm PHAv52i .raw.tavg files and generate PHA station inventory file world1_stnlist.tavg
+* `convert-sef-2-ghcn.py` - SEF to GHCNm format convertor for a single station file
+* `rate-of-station-loss.py` - python code to calculate the rate of station loss as a function of minimum years of data requirement
 
 The first step is to clone the latest pha-prepare code and step into the check out directory: 
 
@@ -25,7 +28,12 @@ pha-prepare scripts can be run from sources directly on input data from CRUTEM.
 Run with:
 
     $ python pha-prepare.py
+    $ python pha-prepare-sef.py
+    $ python pha-prepare-glosat.py
+    $ python onvert-sef-2-ghcn.py
     $ python rate-of-station-loss.py
+
+according to your input data file requirements.
 
 For your PHA v52i set up:
 
